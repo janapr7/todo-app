@@ -4,10 +4,11 @@ module.exports = {
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
-    fontSize: {
-      base: '18px',
-    },
     extend: {
+      fontSize: {
+        reguler: '18px',
+        larger: '32px'
+      },
       fontFamily: {
         default: ["Josefin Sans"],
       },
@@ -28,8 +29,8 @@ module.exports = {
         dVLGrayishBlue: 'hsl(235, 24%, 19%)',
         dLGrayishBlue: 'hsl(234, 39%, 85%)',
         dLGrayishBlueHover: 'hsl(236, 33%, 92%)',
-        dDGrayishBlue: 'hsl(236, 9%, 61%)',
-        dVDGrayishBlue: 'hsl(235, 19%, 35%)'
+        // dDGrayishBlue: 'hsl(236, 9%, 61%)',
+        // dVDGrayishBlue: 'hsl(235, 19%, 35%)',
       },
     },
   },
