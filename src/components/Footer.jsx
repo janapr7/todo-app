@@ -5,7 +5,7 @@ export default function Footer({ dark }) {
     <>
       <div
         className={twMerge(
-          "text-lDGrayishBlue text-center text-lg py-5",
+          "text-lDGrayishBlue text-center text-lg pt-5 pb-20",
           dark && "text-lVDGrayishBlue"
         )}
       >
