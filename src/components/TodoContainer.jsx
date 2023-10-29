@@ -1,38 +1,86 @@
 
-import { useState } from "react";
-
+import { useEffect, useState } from "react";
+import { twMerge } from "tailwind-merge";
+import useTodoStore from "../store/todoStore";
+import useDarkModeStore from "../store/darkModeStore";
+import TodoItem from "./TodoItem";
+import StatusMenu from "./StatusMenu";
 import sunIcon from "../asset/icon/icon-sun.svg"
 import moonIcon from "../asset/icon/icon-moon.svg"
-import { twMerge } from "tailwind-merge";
-import TodoItem from "./TodoItem";
+import CircleIcon from "./CircleIcon";
 
-export default function TodoContainer ({dark}) {
+export default function TodoContainer ({ dark }) {
+    const [activeMenu, setActiveMenu] = useState('All');
+    const { todos, count, addTodo, removeAllCompleted } = useTodoStore();
+    const { setDarkMode } = useDarkModeStore();
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        handleClick();
+    }
+
+    const handleClick = async () => {
+        const task = document.getElementById("task").value
+        if(task.length >= 1){
+            addTodo(task);
+            document.getElementById("task").value = "";
+        }
+    }
+
     return (
         <>
-            <div className="text-reguler justify-center mx-auto py-2 sm:py-20 max-w-xs sm:max-w-lg relative z-10">
+            <div className="text-lg justify-center mx-auto py-2 sm:py-20 max-w-xs sm:max-w-lg relative z-10">
                 <div className="flex items-center justify-between">
                     <h1 className="text-lVLGray font-bold text-2xl sm:text-4xl tracking-[.5em]">TODO</h1>
-                    <img src={dark ? sunIcon : moonIcon} className="h-8 w-8" alt="set mode" />
+                    <button type="button" onClick={setDarkMode}>
+                        <img src={dark ? sunIcon : moonIcon} className="h-8 w-8" alt="set mode" />
+                    </button>
                 </div>
-                <TodoItem first={true} completed={false} dark={dark}/>
-                <div className={twMerge("text-lDGrayishBlue flex justify-between items-center p-3 rounded-b-lg bg-lVLGrayishBlue", dark && "bg-dVLGrayishBlue")}>
+
+                <div className={twMerge("w-full text-lDGrayishBlue flex justify-start items-center p-3 my-5 rounded-lg bg-lVLGrayishBlue", dark && "bg-dVLGrayishBlue")}>
+                    <form onSubmit={handleSubmit} className="w-full">
+                        <div className="flex text-start items-center w-full">
+                            <button type="button" onClick={handleClick}>
+                                <CircleIcon dark={dark} />
+                            </button>
+                            <div className={twMerge("mx-3 text-dVLGray text-lg w-full", dark && "text-lVLGray")}>
+                                <input
+                                    type='text'
+                                    name="task"
+                                    id="task"
+                                    autoComplete='off'
+                                    className={twMerge("appearance-none border-none focus:outline-none w-full bg-lVLGrayishBlue", dark && "bg-dVLGrayishBlue")}
+                                    placeholder="Create a new todo..."
+                                />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                
+                <div className={twMerge("rounded-t-lg  bg-lVLGrayishBlue", dark && "bg-dVLGrayishBlue")}>
+                    {todos.map((item) => (
+                        <TodoItem  text={item.text} completed={item.completed} timestamp={item.timestamp} dark={dark}/>
+                    ))}
+                </div>
+                <div className={twMerge("text-base text-lDGrayishBlue flex justify-between items-center p-3 rounded-b-lg bg-lVLGrayishBlue", dark && "bg-dVLGrayishBlue")}>
                     <div className="">
-                        0 items left
+                        {count} items left
                     </div>
                     <div className="flex items-center text-center hidden sm:block">
-                        <button type="button" className="mx-1.5">
-                            All
-                        </button>
-                        <button type="button" className="mx-1.5">
-                            Active
-                        </button>
-                        <button type="button" className="mx-1.5">
-                            Completed
-                        </button>
+                        <StatusMenu text={"All"} active={activeMenu=="All"}/>
+                        <StatusMenu text={"Active"} active={activeMenu=="Active"}/>
+                        <StatusMenu text={"Completed"} active={activeMenu=="Completed"}/>
                     </div>
-                    <button type="button" className="">
+                    <button type="button" className="hover:text-lVLGray" onClick={removeAllCompleted}>
                         Clear Completed
                     </button>
+                </div>
+                <div className={twMerge("text-lDGrayishBlue flex justify-center items-center p-3 my-5 rounded-lg bg-lVLGrayishBlue sm:hidden", dark && "bg-dVLGrayishBlue")}>
+                    <div className="flex items-center text-center">
+                        <StatusMenu text={"All"} active={activeMenu=="All"}/>
+                        <StatusMenu text={"Active"} active={activeMenu=="Active"}/>
+                        <StatusMenu text={"Completed"} active={activeMenu=="Completed"}/>
+                    </div>
                 </div>
             </div>
         </>
