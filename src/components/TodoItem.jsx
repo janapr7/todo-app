@@ -24,7 +24,7 @@ export default function TodoItem({ text, completed, timestamp, dark }) {
         onMouseEnter={handleHover}
         onMouseLeave={handleLeave}
     >
-        <div className={twMerge("flex justify-between items-center p-3 border-b border-lVDGrayishBlue")}>
+        <div className={twMerge("flex justify-between items-center p-3 border-b border-lLGrayishBlue", dark && "border-lVDGrayishBlue")}>
           <div className="flex items-center text-start">
             <button type="button" onClick={()=>{changeTodoStatus(timestamp)}}>
               <CircleIcon isHovered={isHovered} completed={completed} dark={dark} />

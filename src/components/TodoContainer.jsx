@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import useTodoStore from "../store/todoStore";
 import useDarkModeStore from "../store/darkModeStore";
+import useActiveMenuStore from "../store/activeMenuStore";
 import TodoItem from "./TodoItem";
 import StatusMenu from "./StatusMenu";
 import sunIcon from "../asset/icon/icon-sun.svg"
@@ -10,9 +11,9 @@ import moonIcon from "../asset/icon/icon-moon.svg"
 import CircleIcon from "./CircleIcon";
 
 export default function TodoContainer ({ dark }) {
-    const [activeMenu, setActiveMenu] = useState('All');
     const { todos, count, addTodo, removeAllCompleted } = useTodoStore();
     const { setDarkMode } = useDarkModeStore();
+    const { activeMenu } = useActiveMenuStore();
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -58,28 +59,37 @@ export default function TodoContainer ({ dark }) {
                 </div>
                 
                 <div className={twMerge("rounded-t-lg  bg-lVLGrayishBlue", dark && "bg-dVLGrayishBlue")}>
-                    {todos.map((item) => (
-                        <TodoItem  text={item.text} completed={item.completed} timestamp={item.timestamp} dark={dark}/>
-                    ))}
+                {todos.filter(item => {
+                    if (activeMenu === "All") {
+                    return true;
+                    } else if (activeMenu === "Active") {
+                    return !item.completed;
+                    } else if (activeMenu === "Completed") {
+                    return item.completed;
+                    }
+                    return false;
+                }).map((item) => (
+                    <TodoItem text={item.text} completed={item.completed} timestamp={item.timestamp} dark={dark}/>
+                ))}
                 </div>
                 <div className={twMerge("text-base text-lDGrayishBlue flex justify-between items-center p-3 rounded-b-lg bg-lVLGrayishBlue", dark && "bg-dVLGrayishBlue")}>
                     <div className="">
                         {count} items left
                     </div>
                     <div className="flex items-center text-center hidden sm:block">
-                        <StatusMenu text={"All"} active={activeMenu=="All"}/>
-                        <StatusMenu text={"Active"} active={activeMenu=="Active"}/>
-                        <StatusMenu text={"Completed"} active={activeMenu=="Completed"}/>
+                        <StatusMenu text={"All"} active={activeMenu=="All"} dark={dark}/>
+                        <StatusMenu text={"Active"} active={activeMenu=="Active"} dark={dark}/>
+                        <StatusMenu text={"Completed"} active={activeMenu=="Completed"} dark={dark}/>
                     </div>
-                    <button type="button" className="hover:text-lVLGray" onClick={removeAllCompleted}>
+                    <button type="button" className={dark ? "hover:text-dLGrayishBlueHover" : "hover:text-lVDGrayishBlue"} onClick={removeAllCompleted}>
                         Clear Completed
                     </button>
                 </div>
                 <div className={twMerge("text-lDGrayishBlue flex justify-center items-center p-3 my-5 rounded-lg bg-lVLGrayishBlue sm:hidden", dark && "bg-dVLGrayishBlue")}>
                     <div className="flex items-center text-center">
-                        <StatusMenu text={"All"} active={activeMenu=="All"}/>
-                        <StatusMenu text={"Active"} active={activeMenu=="Active"}/>
-                        <StatusMenu text={"Completed"} active={activeMenu=="Completed"}/>
+                        <StatusMenu text={"All"} active={activeMenu=="All"} dark={dark}/>
+                        <StatusMenu text={"Active"} active={activeMenu=="Active"} dark={dark}/>
+                        <StatusMenu text={"Completed"} active={activeMenu=="Completed"} dark={dark}/>
                     </div>
                 </div>
             </div>
