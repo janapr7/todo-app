@@ -17,8 +17,11 @@ export default function TodoItem({ text, completed, timestamp, index, dark }) {
   };
 
   const handleDragStart = (e) => {
-    e.dataTransfer.setData('text/plain', JSON.stringify({ text, completed, timestamp }));
-    e.dataTransfer.setData('index', index);
+    e.dataTransfer.setData(
+      "text/plain",
+      JSON.stringify({ text, completed, timestamp })
+    );
+    e.dataTransfer.setData("index", index);
   };
 
   return (
@@ -28,17 +31,53 @@ export default function TodoItem({ text, completed, timestamp, index, dark }) {
         className="w-full"
         onMouseEnter={handleHover}
         onMouseLeave={handleLeave}
-    >
-        <div className={twMerge("flex justify-between items-center p-3 border-b border-lLGrayishBlue", dark && "border-lVDGrayishBlue")} draggable={true} onDragStart={handleDragStart} data-index={index}>
+      >
+        <div
+          className={twMerge(
+            "flex justify-between items-center p-3 border-b border-lLGrayishBlue",
+            dark && "border-lVDGrayishBlue"
+          )}
+          draggable={true}
+          onDragStart={handleDragStart}
+          data-index={index}
+        >
           <div className="flex items-center text-start">
-            <button type="button" onClick={()=>{changeTodoStatus(timestamp)}}>
-              <CircleIcon isHovered={isHovered} completed={completed} dark={dark} />
+            <button
+              type="button"
+              onClick={() => {
+                changeTodoStatus(timestamp);
+              }}
+            >
+              <CircleIcon
+                isHovered={isHovered}
+                completed={completed}
+                dark={dark}
+              />
             </button>
-            <div className={twMerge("mx-3 text-dVLGray text-lg", dark && "text-lVLGray", completed && "text-lDGrayishBlue line-through")} onClick={()=>{changeTodoStatus(timestamp)}}>
+            <div
+              className={twMerge(
+                "mx-3 text-dVLGray text-lg",
+                dark && "text-lVLGray",
+                completed && "text-lDGrayishBlue line-through"
+              )}
+              onClick={() => {
+                changeTodoStatus(timestamp);
+              }}
+            >
               {text}
             </div>
           </div>
-          <img src={crossIcon} className={twMerge("h-5 w-5 block", isHovered ? 'sm:block' : 'sm:hidden')} alt="remove item" onClick={()=>{removeTodo(timestamp)}} />
+          <img
+            src={crossIcon}
+            className={twMerge(
+              "h-5 w-5 block",
+              isHovered ? "sm:block" : "sm:hidden"
+            )}
+            alt="remove item"
+            onClick={() => {
+              removeTodo(timestamp);
+            }}
+          />
         </div>
       </button>
     </>
