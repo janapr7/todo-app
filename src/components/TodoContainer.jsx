@@ -11,9 +11,35 @@ import moonIcon from "../asset/icon/icon-moon.svg"
 import CircleIcon from "./CircleIcon";
 
 export default function TodoContainer ({ dark }) {
-    const { todos, count, addTodo, removeAllCompleted } = useTodoStore();
+    const { todos, count, setTodos, addTodo, removeAllCompleted } = useTodoStore();
     const { setDarkMode } = useDarkModeStore();
     const { activeMenu } = useActiveMenuStore();
+
+    const handleDragOver = (e) => {
+        e.preventDefault();
+    };
+
+    const handleDragEnter = (e) => {
+        e.preventDefault();
+    };
+
+    const handleDrop = (e) => {
+        e.preventDefault();
+        const todoData = JSON.parse(e.dataTransfer.getData('text/plain'));
+        const targetIndex = e.target.dataset.index;
+
+        const currentIndex = todos.findIndex(object => {
+            return object.timestamp == todoData.timestamp;
+        });
+
+        if(targetIndex!=undefined || targetIndex != currentIndex){
+            const newOrder = [...todos];
+            const [movedElement] = newOrder.splice(currentIndex, 1);
+            
+            newOrder.splice(targetIndex, 0, movedElement);
+            setTodos(newOrder);
+        }
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -58,7 +84,7 @@ export default function TodoContainer ({ dark }) {
                     </form>
                 </div>
                 
-                <div className={twMerge("rounded-t-lg  bg-lVLGrayishBlue", dark && "bg-dVLGrayishBlue")}>
+                <div className={twMerge("rounded-t-lg  bg-lVLGrayishBlue", dark && "bg-dVLGrayishBlue")} onDragOver={handleDragOver} onDragEnter={handleDragEnter} onDrop={handleDrop}>
                 {todos.filter(item => {
                     if (activeMenu === "All") {
                     return true;
@@ -68,8 +94,8 @@ export default function TodoContainer ({ dark }) {
                     return item.completed;
                     }
                     return false;
-                }).map((item) => (
-                    <TodoItem text={item.text} completed={item.completed} timestamp={item.timestamp} dark={dark}/>
+                }).map((item, index) => (
+                    <TodoItem text={item.text} completed={item.completed} timestamp={item.timestamp} index={index} dark={dark}/>
                 ))}
                 </div>
                 <div className={twMerge("text-base text-lDGrayishBlue flex justify-between items-center p-3 rounded-b-lg bg-lVLGrayishBlue", dark && "bg-dVLGrayishBlue")}>

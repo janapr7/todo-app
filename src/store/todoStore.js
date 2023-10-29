@@ -4,6 +4,13 @@ const useTodoStore = create((set) => ({
   todos: JSON.parse(localStorage.getItem('todos')) || [],
   count: JSON.parse(localStorage.getItem('todos'))?.filter(todo => !todo.completed).length || 0,
 
+  setTodos: (newTodos) => set((state) => {;
+    localStorage.setItem('todos', JSON.stringify(newTodos));
+    return { 
+      todos: newTodos,
+    };
+  }),
+
   addTodo: (text) => set((state) => {
     const newTodo = { text, completed: false, timestamp: Date.now() };
     const updatedTodos = [...state.todos, newTodo];
@@ -41,7 +48,6 @@ const useTodoStore = create((set) => ({
     localStorage.setItem('todos', JSON.stringify(updatedTodos));
     return { 
       todos: updatedTodos,
-      count: 0
     };
   })
 }));

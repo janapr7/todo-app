@@ -4,7 +4,7 @@ import useTodoStore from "../store/todoStore";
 import CircleIcon from "./CircleIcon";
 import crossIcon from "../asset/icon/icon-cross.svg";
 
-export default function TodoItem({ text, completed, timestamp, dark }) {
+export default function TodoItem({ text, completed, timestamp, index, dark }) {
   const [isHovered, setIsHovered] = useState(false);
   const { changeTodoStatus, removeTodo } = useTodoStore();
 
@@ -16,6 +16,11 @@ export default function TodoItem({ text, completed, timestamp, dark }) {
     setIsHovered(false);
   };
 
+  const handleDragStart = (e) => {
+    e.dataTransfer.setData('text/plain', JSON.stringify({ text, completed, timestamp }));
+    e.dataTransfer.setData('index', index);
+  };
+
   return (
     <>
       <button
@@ -24,7 +29,7 @@ export default function TodoItem({ text, completed, timestamp, dark }) {
         onMouseEnter={handleHover}
         onMouseLeave={handleLeave}
     >
-        <div className={twMerge("flex justify-between items-center p-3 border-b border-lLGrayishBlue", dark && "border-lVDGrayishBlue")}>
+        <div className={twMerge("flex justify-between items-center p-3 border-b border-lLGrayishBlue", dark && "border-lVDGrayishBlue")} draggable={true} onDragStart={handleDragStart} data-index={index}>
           <div className="flex items-center text-start">
             <button type="button" onClick={()=>{changeTodoStatus(timestamp)}}>
               <CircleIcon isHovered={isHovered} completed={completed} dark={dark} />
